@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class GlobalObject {
-static Set<int> selectedIndexes = Set<int>();
+ Set<int> selectedIndexes = Set<int>();
 // static dynamic _detectTapedItem;
 
 }
@@ -24,8 +24,8 @@ static Set<int> selectedIndexes = Set<int>();
 class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   
-  static final key = GlobalKey();
-  static final Set<Foo2> trackTaped = Set<Foo2>();
+   final key =new  GlobalKey();
+   final Set<Foo2> trackTaped = Set<Foo2>();
 
   final LocalStorage _storage = new LocalStorage('app_settings');
 

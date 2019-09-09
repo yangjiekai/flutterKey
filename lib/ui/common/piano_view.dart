@@ -40,9 +40,9 @@ class _PianoViewState extends State<PianoView> {
   }
 
   int _clearSelection(PointerUpEvent event) {
-     HomeScreenState.trackTaped.clear();
+     HomeScreenState().trackTaped.clear();
       setState(() {
-      GlobalObject.selectedIndexes.clear();
+      GlobalObject().selectedIndexes.clear();
     }
    
     );
@@ -51,7 +51,7 @@ class _PianoViewState extends State<PianoView> {
 
    int  _selectIndex(int index) {
    setState(() {
-      GlobalObject.selectedIndexes.add(index);
+      GlobalObject().selectedIndexes.add(index);
     });
 
     return 0;

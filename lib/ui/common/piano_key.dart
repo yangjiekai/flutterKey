@@ -15,8 +15,8 @@ class PianoKey extends StatelessWidget {
     @required this.showLabels,
     @required this.labelsOnlyOctaves,
     this.feedback,
-      clearSelection,
-    selectIndex
+      this.clearSelection,
+    this.selectIndex
   });
 
   final bool accidental;
@@ -26,20 +26,20 @@ class PianoKey extends StatelessWidget {
   final bool labelsOnlyOctaves;
   final bool feedback;
 
- static Function(int) selectIndex;
- static Function(PointerUpEvent)  clearSelection;
+   final Function(int) selectIndex;
+  final  Function(PointerUpEvent)  clearSelection;
 
 
-  static _detectTapedItem(PointerEvent event) {
-    final RenderBox box =  HomeScreenState.key.currentContext.findRenderObject();
+   _detectTapedItem(PointerEvent event) {
+    final RenderBox box =  HomeScreenState().key.currentContext.findRenderObject();
     final result = BoxHitTestResult();
     Offset local = box.globalToLocal(event.position);
     if (box.hitTest(result, position: local)) {
       for (final hit in result.path) {
         /// temporary variable so that the [is] allows access of [index]
         final target = hit.target;
-        if (target is Foo2 && !HomeScreenState.trackTaped.contains(target)) {
-          HomeScreenState.trackTaped.add(target);
+        if (target is Foo2 && !HomeScreenState().trackTaped.contains(target)) {
+          HomeScreenState().trackTaped.add(target);
          selectIndex(target.index);
         }
       }
@@ -97,8 +97,8 @@ class PianoKey extends StatelessWidget {
                  onPointerUp: clearSelection,
                 child:  InkWell(
                   borderRadius: _borderRadius,
-                  highlightColor: Colors.grey,
-              
+                  // highlightColor: Colors.grey,
+               highlightColor: GlobalObject().selectedIndexes.contains(keyWidth) ? Colors.red : Colors.blue,
                   onTap: () {} ,
                   onTapDown: (_) {
                   
