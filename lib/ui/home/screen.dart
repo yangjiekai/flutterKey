@@ -5,20 +5,54 @@ import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:vibrate/vibrate.dart';
-
+import 'package:flutter/rendering.dart';
 import '../../utils/index.dart';
 import '../common/piano_view.dart';
 import '../settings/screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+class GlobalObject {
+static Set<int> selectedIndexes = Set<int>();
+// static dynamic _detectTapedItem;
+
+}
+
+class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+
+  
+  static final key = GlobalKey();
+  static final Set<Foo2> trackTaped = Set<Foo2>();
+
   final LocalStorage _storage = new LocalStorage('app_settings');
 
   bool _isDisposed = false;
+
+
+  // static _detectTapedItem(PointerEvent event) {
+  //   final RenderBox box = key.currentContext.findRenderObject();
+  //   final result = BoxHitTestResult();
+  //   Offset local = box.globalToLocal(event.position);
+  //   if (box.hitTest(result, position: local)) {
+  //     for (final hit in result.path) {
+  //       /// temporary variable so that the [is] allows access of [index]
+  //       final target = hit.target;
+  //       if (target is Foo2 && !_trackTaped.contains(target)) {
+  //         _trackTaped.add(target);
+  //         _selectIndex(target.index);
+  //       }
+  //     }
+  //   }
+  // }
+
+  //  static _selectIndex(int index) {
+  //   setState(() {
+  //     GlobalObject.selectedIndexes.add(index);
+  //   });
+  // }
 
   @override
   initState() {
@@ -182,6 +216,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               labelsOnlyOctaves: _labelsOnlyOctaves,
               disableScroll: _disableScroll,
               feedback: _vibrate,
+             
+
             ),
           ),
         ],
@@ -195,4 +231,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       feedback: _vibrate,
     );
   }
+}
+
+class Foo extends SingleChildRenderObjectWidget {
+  final int index;
+
+  Foo({Widget child, this.index, Key key}) : super(child: child, key: key);
+
+  @override
+  Foo2 createRenderObject(BuildContext context) {
+    return Foo2()..index = index;
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, Foo2 renderObject) {
+    renderObject..index = index;
+  }
+}
+
+class Foo2 extends RenderProxyBox {
+  int index;
 }

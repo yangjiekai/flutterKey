@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../home/screen.dart';
 import 'piano_key.dart';
 
 class PianoOctave extends StatelessWidget {
@@ -9,6 +9,8 @@ class PianoOctave extends StatelessWidget {
     @required this.showLabels,
     @required this.labelsOnlyOctaves,
     this.feedback,
+    clearSelection,
+    selectIndex
   });
 
   final double keyWidth;
@@ -16,6 +18,8 @@ class PianoOctave extends StatelessWidget {
   final bool showLabels;
   final bool labelsOnlyOctaves;
   final bool feedback;
+  static Function(int) selectIndex;
+ static Function(PointerUpEvent)  clearSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +43,20 @@ class PianoOctave extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Container(width: keyWidth * .5),
+                  Container(width: keyWidth * .5,
+                  color: GlobalObject.selectedIndexes.contains(keyWidth) ? Colors.red : Colors.blue,
+                  ),
                   _buildKey(25, true),
                   _buildKey(27, true),
-                  Container(width: keyWidth),
+                  Container(width: keyWidth,
+                  color: GlobalObject.selectedIndexes.contains(keyWidth) ? Colors.red : Colors.blue,
+                  ),
                   _buildKey(30, true),
                   _buildKey(32, true),
                   _buildKey(34, true),
-                  Container(width: keyWidth * .5),
+                  Container(width: keyWidth * .5,
+                  color: GlobalObject.selectedIndexes.contains(keyWidth) ? Colors.red : Colors.blue,
+                  ),
                 ])),
       ]),
     );
@@ -60,6 +70,8 @@ class PianoOctave extends StatelessWidget {
       showLabels: showLabels,
       labelsOnlyOctaves: labelsOnlyOctaves,
       feedback: feedback,
+        clearSelection : clearSelection,
+               selectIndex : selectIndex
     );
   }
 }

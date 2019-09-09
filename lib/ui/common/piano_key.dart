@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
+
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:tonic/tonic.dart';
 import 'package:vibrate/vibrate.dart';
+import '../home/screen.dart';
 
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 class PianoKey extends StatelessWidget {
   const PianoKey({
     @required this.keyWidth,
@@ -11,6 +15,8 @@ class PianoKey extends StatelessWidget {
     @required this.showLabels,
     @required this.labelsOnlyOctaves,
     this.feedback,
+      clearSelection,
+    selectIndex
   });
 
   final bool accidental;
@@ -20,6 +26,37 @@ class PianoKey extends StatelessWidget {
   final bool labelsOnlyOctaves;
   final bool feedback;
 
+ static Function(int) selectIndex;
+ static Function(PointerUpEvent)  clearSelection;
+
+
+  static _detectTapedItem(PointerEvent event) {
+    final RenderBox box =  HomeScreenState.key.currentContext.findRenderObject();
+    final result = BoxHitTestResult();
+    Offset local = box.globalToLocal(event.position);
+    if (box.hitTest(result, position: local)) {
+      for (final hit in result.path) {
+        /// temporary variable so that the [is] allows access of [index]
+        final target = hit.target;
+        if (target is Foo2 && !HomeScreenState.trackTaped.contains(target)) {
+          HomeScreenState.trackTaped.add(target);
+         selectIndex(target.index);
+        }
+      }
+    }
+  }
+  //   void _clearSelection(PointerUpEvent event) {
+  //    HomeScreenState.trackTaped.clear();
+  //     setState(() {
+  //     GlobalObject.selectedIndexes.clear();
+  //   });
+  // }
+
+  //  static _selectIndex(int index) {
+  //  setState(() {
+  //     GlobalObject.selectedIndexes.add(index);
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     final pitchName = Pitch.fromMidiNumber(midi).toString();
@@ -31,9 +68,37 @@ class PianoKey extends StatelessWidget {
             child: Material(
                 borderRadius: _borderRadius,
                 color: accidental ? Colors.black : Colors.white,
-                child: InkWell(
+                child: 
+                
+              //   InkWell(
+              //     borderRadius: _borderRadius,
+              //     highlightColor: Colors.grey,
+              //     onPointerDown: _detectTapedItem,
+              // onPointerMove: _detectTapedItem,
+              //     onTap: () {} ,
+              //     onTapDown: (_) {
+                  
+              //       FlutterMidi.playMidiNote(midi: midi);
+              //         if (feedback) {
+              //         Vibrate.feedback(FeedbackType.light);
+              //       }
+              //     },
+              //     onTapCancel: () {
+              //       FlutterMidi.stopMidiNote(midi: midi);
+              //     },
+              //   )
+
+
+                ///////////////
+                ///
+                 Listener(
+                onPointerDown: _detectTapedItem ,
+                onPointerMove: _detectTapedItem,
+                 onPointerUp: clearSelection,
+                child:  InkWell(
                   borderRadius: _borderRadius,
                   highlightColor: Colors.grey,
+              
                   onTap: () {} ,
                   onTapDown: (_) {
                   
@@ -45,7 +110,13 @@ class PianoKey extends StatelessWidget {
                   onTapCancel: () {
                     FlutterMidi.stopMidiNote(midi: midi);
                   },
-                ))),
+                )
+
+              )
+                ///
+                
+                
+                )),
         Positioned(
             left: 0.0,
             right: 0.0,
@@ -66,6 +137,7 @@ class PianoKey extends StatelessWidget {
           child: Material(
               elevation: 6.0,
               borderRadius: _borderRadius,
+              //  color: GlobalObject.selectedIndexes.contains(index) ? Colors.red : Colors.blue,
               shadowColor: Color(0x802196F3),
               child: pianoKey));
     }
@@ -86,6 +158,8 @@ class PianoKey extends StatelessWidget {
     return false;
   }
 }
+
+
 
 const BorderRadiusGeometry _borderRadius = BorderRadius.only(
   bottomLeft: Radius.circular(10.0),

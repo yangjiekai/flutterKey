@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'piano_octave.dart';
 import 'piano_slider.dart';
+import '../home/screen.dart';
+
+
 
 class PianoView extends StatefulWidget {
   const PianoView({
@@ -10,6 +13,8 @@ class PianoView extends StatefulWidget {
     @required this.labelsOnlyOctaves,
     this.disableScroll,
     this.feedback,
+    detectTapedItem,
+    selectedIndexes
   });
 
   final double keyWidth;
@@ -17,6 +22,8 @@ class PianoView extends StatefulWidget {
   final bool labelsOnlyOctaves;
   final bool disableScroll;
   final bool feedback;
+
+
 
   @override
   _PianoViewState createState() => _PianoViewState();
@@ -31,6 +38,30 @@ class _PianoViewState extends State<PianoView> {
     _controller = ScrollController(initialScrollOffset: currentOffset);
     super.initState();
   }
+
+  int _clearSelection(PointerUpEvent event) {
+     HomeScreenState.trackTaped.clear();
+      setState(() {
+      GlobalObject.selectedIndexes.clear();
+    }
+   
+    );
+     return 0;
+  }
+
+   int  _selectIndex(int index) {
+   setState(() {
+      GlobalObject.selectedIndexes.add(index);
+    });
+
+    return 0;
+  }
+
+  
+
+ 
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +98,8 @@ class _PianoViewState extends State<PianoView> {
                 showLabels: widget.showLabels,
                 labelsOnlyOctaves: widget.labelsOnlyOctaves,
                 feedback: widget.feedback,
+                clearSelection : _clearSelection,
+               selectIndex : _selectIndex
               );
             },
           ),
