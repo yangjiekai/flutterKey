@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_midi/flutter_midi.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:vibrate/vibrate.dart';
+import 'package:flutter/rendering.dart';
 
 import '../../utils/index.dart';
 import '../common/piano_view.dart';
@@ -15,6 +16,11 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+class GlobalObject {
+ static Set<int> selectedIndexes = Set<int>();
+// static dynamic _detectTapedItem;
+
+}
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final LocalStorage _storage = new LocalStorage('app_settings');
 
@@ -150,14 +156,67 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       )),
       appBar: AppBar(
           title: Text(
-        "The Pocket Piano",
+        "JK ROCK Piano",
         style: TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 30.0,
         ),
       )),
-      body: _buildKeys(context),
+      body:
+      // kai change------------
+      //  change from _buildKeys to wrap with Listener
+      // _buildKeys(context),
+      // kai change------------
+      Listener(
+
+        onPointerDown: _detectTapedItem,
+        onPointerMove: _detectTapedItem,
+        onPointerUp: _clearSelection,
+        child:
+              _buildKeys(context),
+
+
+//              Foo(
+//              index: index,
+//              child: Container(
+//                color: selectedIndexes.contains(index) ? Colors.red : Colors.blue,
+//              ),
+//            );
+
+      )
+
+
     );
+  }
+//   final Set<int> selectedIndexes = Set<int>();
+
+  final key = GlobalKey();
+  final Set<_Foo> _trackTaped = Set<_Foo>();
+  void _clearSelection(PointerUpEvent event) {
+    _trackTaped.clear();
+    setState(() {
+      GlobalObject.selectedIndexes.clear();
+    });
+  }
+  _selectIndex(int index) {
+    setState(() {
+      GlobalObject.selectedIndexes.add(index);
+    });
+  }
+  _detectTapedItem(PointerEvent event) {
+    final RenderBox box =  key.currentContext.findRenderObject();
+    final result = BoxHitTestResult();
+    Offset local = box.globalToLocal(event.position);
+    if (box.hitTest(result, position: local)) {
+      for (final hit in result.path) {
+        /// temporary variable so that the [is] allows access of [index]
+        final target = hit.target;
+        if (target is _Foo && !_trackTaped.contains(target)) {
+          _trackTaped.add(target);
+          _selectIndex(target.index);
+        }
+      }
+    }
   }
 
   Widget _buildKeys(BuildContext context) {
@@ -195,4 +254,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       feedback: _vibrate,
     );
   }
+}
+
+class Foo extends SingleChildRenderObjectWidget {
+  final int index;
+
+  Foo({Widget child, this.index, Key key}) : super(child: child, key: key);
+
+  @override
+  _Foo createRenderObject(BuildContext context) {
+    return _Foo()..index = index;
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, _Foo renderObject) {
+    renderObject..index = index;
+  }
+}
+
+class _Foo extends RenderProxyBox {
+  int index;
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'piano_key.dart';
-
-class PianoOctave extends StatelessWidget {
+import '../home/screen.dart';
+class PianoOctave extends StatefulWidget {
   const PianoOctave({
     this.keyWidth,
     this.octave,
@@ -16,6 +16,17 @@ class PianoOctave extends StatelessWidget {
   final bool showLabels;
   final bool labelsOnlyOctaves;
   final bool feedback;
+
+  @override
+  _PianoOctaveState createState() => _PianoOctaveState(this.keyWidth);
+}
+
+class _PianoOctaveState extends State<PianoOctave> {
+  _PianoOctaveState( this.keyWidth);
+  final double keyWidth;
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +50,21 @@ class PianoOctave extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Container(width: keyWidth * .5),
+                  Container(width: widget.keyWidth * .5,
+                    color: GlobalObject.selectedIndexes.contains(this.keyWidth) ? Colors.red : Colors.blue,
+                  ),
                   _buildKey(25, true),
                   _buildKey(27, true),
-                  Container(width: keyWidth),
+                  Container(width: widget.keyWidth,
+                    color: GlobalObject.selectedIndexes.contains(this.keyWidth) ? Colors.red : Colors.blue,
+                  ),
                   _buildKey(30, true),
                   _buildKey(32, true),
                   _buildKey(34, true),
-                  Container(width: keyWidth * .5),
+                  Container(width: widget.keyWidth * .5,
+
+                    color: GlobalObject.selectedIndexes.contains(this.keyWidth) ? Colors.red : Colors.blue,
+                  ),
                 ])),
       ]),
     );
@@ -54,12 +72,12 @@ class PianoOctave extends StatelessWidget {
 
   Widget _buildKey(int midi, bool accidental) {
     return PianoKey(
-      midi: midi + octave,
+      midi: midi + widget.octave,
       accidental: accidental,
-      keyWidth: keyWidth,
-      showLabels: showLabels,
-      labelsOnlyOctaves: labelsOnlyOctaves,
-      feedback: feedback,
+      keyWidth: widget.keyWidth,
+      showLabels: widget.showLabels,
+      labelsOnlyOctaves: widget.labelsOnlyOctaves,
+      feedback: widget.feedback,
     );
   }
 }

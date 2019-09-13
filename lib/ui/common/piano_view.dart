@@ -31,7 +31,6 @@ class _PianoViewState extends State<PianoView> {
     _controller = ScrollController(initialScrollOffset: currentOffset);
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Flex(
