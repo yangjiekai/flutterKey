@@ -12,6 +12,8 @@ import '../common/piano_view.dart';
 import '../settings/screen.dart';
 
 class HomeScreen extends StatefulWidget {
+
+  HomeScreen ({Key key}):super (key: key);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -83,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size);
     return Scaffold(
+      key:key,
       drawer: Drawer(
           child: SafeArea(
         child: ListView(children: <Widget>[
@@ -173,6 +176,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         onPointerMove: _detectTapedItem,
         onPointerUp: _clearSelection,
         child:
+            // use FOO function and call buildkey inside
+
               _buildKeys(context),
 
 
@@ -190,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 //   final Set<int> selectedIndexes = Set<int>();
 
-  final key = GlobalKey();
+  final key = new GlobalKey<_HomeScreenState>();
   final Set<_Foo> _trackTaped = Set<_Foo>();
   void _clearSelection(PointerUpEvent event) {
     _trackTaped.clear();

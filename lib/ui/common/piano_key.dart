@@ -3,7 +3,7 @@ import 'package:flutter_midi/flutter_midi.dart';
 import 'package:tonic/tonic.dart';
 import 'package:vibrate/vibrate.dart';
 
-class PianoKey extends StatelessWidget {
+class PianoKey extends StatefulWidget {
   const PianoKey({
     @required this.keyWidth,
     this.midi,
@@ -21,8 +21,13 @@ class PianoKey extends StatelessWidget {
   final bool feedback;
 
   @override
+  _PianoKeyState createState() => _PianoKeyState();
+}
+
+class _PianoKeyState extends State<PianoKey> {
+  @override
   Widget build(BuildContext context) {
-    final pitchName = Pitch.fromMidiNumber(midi).toString();
+    final pitchName = Pitch.fromMidiNumber(widget.midi).toString();
     final pianoKey = Stack(
       children: <Widget>[
         Semantics(
@@ -30,20 +35,20 @@ class PianoKey extends StatelessWidget {
             hint: pitchName,
             child: Material(
                 borderRadius: _borderRadius,
-                color: accidental ? Colors.black : Colors.white,
+                color: widget.accidental ? Colors.black : Colors.white,
                 child: InkWell(
                   borderRadius: _borderRadius,
                   highlightColor: Colors.grey,
                   onTap: () {} ,
                   onTapDown: (_) {
-                  
-                    FlutterMidi.playMidiNote(midi: midi);
-                      if (feedback) {
+
+                    FlutterMidi.playMidiNote(midi: widget.midi);
+                      if (widget.feedback) {
                       Vibrate.feedback(FeedbackType.light);
                     }
                   },
                   onTapCancel: () {
-                    FlutterMidi.stopMidiNote(midi: midi);
+                    FlutterMidi.stopMidiNote(midi: widget.midi);
                   },
                 ))),
         Positioned(
@@ -54,15 +59,15 @@ class PianoKey extends StatelessWidget {
                 ? Text(pitchName,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: !accidental ? Colors.black : Colors.white))
+                        color: !widget.accidental ? Colors.black : Colors.white))
                 : Container()),
       ],
     );
-    if (accidental) {
+    if (widget.accidental) {
       return Container(
-          width: keyWidth,
+          width: widget.keyWidth,
           margin: EdgeInsets.symmetric(horizontal: 2.0),
-          padding: EdgeInsets.symmetric(horizontal: keyWidth * .1),
+          padding: EdgeInsets.symmetric(horizontal: widget.keyWidth * .1),
           child: Material(
               elevation: 6.0,
               borderRadius: _borderRadius,
@@ -70,14 +75,14 @@ class PianoKey extends StatelessWidget {
               child: pianoKey));
     }
     return Container(
-        width: keyWidth,
+        width: widget.keyWidth,
         child: pianoKey,
         margin: EdgeInsets.symmetric(horizontal: 2.0));
   }
 
   bool buildShowLabels(String pitchName) {
-    if (showLabels) {
-      if (labelsOnlyOctaves) {
+    if (widget.showLabels) {
+      if (widget.labelsOnlyOctaves) {
         if (pitchName.replaceAll(RegExp("[0-9]"), "") == "C") return true;
         return false;
       }
